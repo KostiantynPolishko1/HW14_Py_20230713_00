@@ -1,10 +1,15 @@
 import os
-import pathlib
 from pathlib import Path
 import shutil
+def set_direct(folder: str) ->None:
+
+    if os.path.exists(Path(Path.home(), folder)):
+        os.chdir(Path(Path.home(), folder))
+        print('\nset path', os.getcwd())
+    else:
+        print("\nERROR!\nTelegramDesktop is not available")
 
 if __name__ == '__main__':
-    print(Path.home())
-    # os.chdir(r'C:\Users\User\Downloads')
-    # os.chdir(r'%HOMEPATH%')
-    # print(os.getcwd())
+    app_folder = 'Downloads\Telegram Desktop'
+    set_direct(app_folder)
+
