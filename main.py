@@ -18,6 +18,14 @@ def file_readb(file_name: str) ->dict:
     data_dict = eval(data_str)
     return data_dict
 
+def bypassFile(path, lev: int = 1) -> None:
+    print('\t'*lev, ':', os.listdir(path))
+
+    for i in os.listdir(path):
+        if os.path.isdir(Path(path, i)):
+            print('\t'*(lev+1), '->', i)
+            bypassFile(Path(path, i), lev+4)
+
 def file_writeb(file_name: str, data_dict: dict) ->None:
     with open((file_name + '.txt'), 'wb') as file:
         try:
@@ -28,7 +36,7 @@ def file_writeb(file_name: str, data_dict: dict) ->None:
 def set_direct(dir: str) -> None:
     if os.path.exists(Path(Path.home(), dir)):
         os.chdir(Path(Path.home(), dir))
-        print('\nset path', os.getcwd())
+        print('\nsource\t', os.getcwd())
     else:
         print("\nERROR!\nTelegramDesktop is not available")
 
@@ -110,7 +118,12 @@ if __name__ == '__main__':
 
     data = file_readb(f_name)
 
+    print('\n\tPy application. Move files')
     set_direct(data[0][0])
+
+    print('Before:')
+    bypassFile(os.getcwd())
+
     create_folders(data)
 
     move_picture(data[1])
@@ -120,7 +133,8 @@ if __name__ == '__main__':
     move_file(data[5])
     move_folder(data)
 
-    print('DONE')
+    print('DONE.\nAfter:')
+    bypassFile(os.getcwd())
 else:
     print('ERROR!')
 
