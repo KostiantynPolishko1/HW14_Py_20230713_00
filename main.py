@@ -1,6 +1,29 @@
 import os
+import pickle
 from pathlib import Path
 import shutil
+
+def file_readb(file_name: str) ->dict:
+    data_str: str
+    data_dict: dict
+
+    try:
+        with open((file_name + '.txt'), 'rb') as file:
+            data_str = pickle.load(file)
+    except FileNotFoundError:
+        print("ERROR! FILE ABSENT")
+    except Exception as FileNotWorkError:
+        print("ERROR! ABOARD FILE READ")
+
+    data_dict = eval(data_str)
+    return data_dict
+
+def file_writeb(file_name: str, data_dict: dict) ->None:
+    with open((file_name + '.txt'), 'wb') as file:
+        try:
+            pickle.dump(str(data_dict), file)
+        except Exception as FileNotWorkError:
+            print("ERROR! ABOARD FILE RECORD")
 
 def set_direct(dir: str) -> None:
     if os.path.exists(Path(Path.home(), dir)):
@@ -17,11 +40,11 @@ def create_folders(dict_f: dict) -> None:
 def check_FileRename(target_dir: str, file_name: str):
     ind = 0
     while True:
-        if os.path.exists(Path(os.getcwd(), target_dir, file_name).stem + ('{}({})'.format(global_sufix, ind)) +
+        if os.path.exists(Path(os.getcwd(), target_dir, file_name).stem + ('{}({})'.format(global_s, ind)) +
                           Path(os.getcwd(), target_dir, file_name).suffix):
             ind += 1
         else:
-            return Path(file_name).rename(Path(file_name).stem + ('{}({})'.format(global_sufix, ind)) +
+            return Path(file_name).rename(Path(file_name).stem + ('{}({})'.format(global_s, ind)) +
                                           Path(file_name).suffix)
 
 def move_picture(arr_f: list) -> None:
@@ -79,29 +102,35 @@ def move_folder(dict_f: dict) -> None:
             shutil.move(f_name, Path(os.getcwd(), dict_f[6][0]))  # move inside folder 'Folders'
 
 #==========================================main==========================================#
-global_sufix = '_copy'
 
 if __name__ == '__main__':
 
-    dict_folder = {0: ['Downloads\Telegram Desktop', 'data.txt'],
-                   1: ['Pictures', ['.bmp', '.png', '.jpg', '.jpeg', '.tif', '.tiff', 'gif']],
-                   2: ['Video', ['.mp4', '.mov', '.avi', '.avchd', '.flv', '.f4v', '.swf', '.mkv', '.webm', '.html5']],
-                   3: ['Music', ['.mp3', '.aac', '.alac', '.flac', '.wma', '.wav', '.aiff']],
-                   4: ['Documents', ['.doc', '.docx', '.pdf', '.txt', '.rtf', '.pptx', '.csv', '.xls', '.xlsx', '.xlsm']],
-                   5: ['Others'],
-                   6: ['Folders']
-                   }
+    global_s = '_copy'
+    f_name = 'data'
 
-    set_direct(dict_folder[0][0])
-    create_folders(dict_folder)
+    data = file_readb(f_name)
 
-    move_picture(dict_folder[1])
-    move_video(dict_folder[2])
-    move_music(dict_folder[3])
-    move_doc(dict_folder[4])
-    move_file(dict_folder[5])
-    move_folder(dict_folder)
+    set_direct(data[0][0])
+    create_folders(data)
+
+    move_picture(data[1])
+    move_video(data[2])
+    move_music(data[3])
+    move_doc(data[4])
+    move_file(data[5])
+    move_folder(data)
 
     print('DONE')
 else:
     print('ERROR!')
+
+#=============================back_up====================================#
+# data = {0: ['Downloads\Telegram Desktop', 'data.txt'],
+#         1: ['Pictures', ['.bmp', '.png', '.jpg', '.jpeg', '.tif', '.tiff', 'gif']],
+#         2: ['Video', ['.mp4', '.mov', '.avi', '.avchd', '.flv', '.f4v', '.swf', '.mkv', '.webm', '.html5']],
+#         3: ['Music', ['.mp3', '.aac', '.alac', '.flac', '.wma', '.wav', '.aiff']],
+#         4: ['Documents', ['.doc', '.docx', '.pdf', '.txt', '.rtf', '.pptx', '.csv', '.xls', '.xlsx', '.xlsm']],
+#         5: ['Others'],
+#         6: ['Folders']
+#         }
+# file_writeb(f_name, data)
