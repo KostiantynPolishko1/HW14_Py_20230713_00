@@ -1,17 +1,6 @@
 import os
 from pathlib import Path
 import shutil
-import json
-
-def toJSON_File(_dict: dict, f_name: str) ->None:
-    with open(f_name, "w") as myFile:
-        json.dump(_dict, myFile)
-
-def JSON_File_toDict(f_name: str) ->dict:
-    _dict = {}
-    with open(f_name, "r") as myFile:
-        _dict = json.load(myFile)
-    return _dict
 
 def set_direct(dir: str) -> None:
     if os.path.exists(Path(Path.home(), dir)):
@@ -20,45 +9,77 @@ def set_direct(dir: str) -> None:
     else:
         print("\nERROR!\nTelegramDesktop is not available")
 
-
 def create_folders(dict_f: dict) -> None:
     for i in range(1, len(dict_f)):
         if not os.path.isdir(dict_f[i][0]):
             os.mkdir(dict_f[i][0])
 
+def check_FileRename(target_dir: str, file_name: str):
+    ind = 0
+    while True:
+        if os.path.exists(Path(os.getcwd(), target_dir, file_name).stem + ('{}({})'.format(global_sufix, ind)) +
+                          Path(os.getcwd(), target_dir, file_name).suffix):
+            ind += 1
+        else:
+            return Path(file_name).rename(Path(file_name).stem + ('{}({})'.format(global_sufix, ind)) +
+                                          Path(file_name).suffix)
+
 def move_picture(arr_f: list) -> None:
     for f_name in os.listdir():
-        if Path(f_name).suffix.lower() in arr_f[1]:
+        if Path(f_name).suffix.lower() in arr_f[1] and os.stat(f_name).st_ino != 0:
+
+            if os.path.exists(Path(os.getcwd(), arr_f[0], f_name)):
+                f_name = check_FileRename(arr_f[0], f_name)
+
             shutil.move(f_name, Path(os.getcwd(), arr_f[0]))  # move inside folder 'Pictures'
 
 def move_video(arr_f: list) -> None:
     for f_name in os.listdir():
-        if Path(f_name).suffix.lower() in arr_f[1]:
+        if Path(f_name).suffix.lower() in arr_f[1] and os.stat(f_name).st_ino != 0:
+
+            if os.path.exists(Path(os.getcwd(), arr_f[0], f_name)):
+                f_name = check_FileRename(arr_f[0], f_name)
+
             shutil.move(f_name, Path(os.getcwd(), arr_f[0]))  # move inside folder 'Video'
 
 def move_music(arr_f: list) -> None:
     for f_name in os.listdir():
-        if Path(f_name).suffix.lower() in arr_f[1]:
+        if Path(f_name).suffix.lower() in arr_f[1] and os.stat(f_name).st_ino != 0:
+
+            if os.path.exists(Path(os.getcwd(), arr_f[0], f_name)):
+                f_name = check_FileRename(arr_f[0], f_name)
+
             shutil.move(f_name, Path(os.getcwd(), arr_f[0]))  # move inside folder 'Music'
 
 def move_doc(arr_f: list) -> None:
     for f_name in os.listdir():
-        if Path(f_name).suffix.lower() in arr_f[1]:
+        if Path(f_name).suffix.lower() in arr_f[1] and os.stat(f_name).st_ino != 0:
+
+            if os.path.exists(Path(os.getcwd(), arr_f[0], f_name)):
+                f_name = check_FileRename(arr_f[0], f_name)
+
             shutil.move(f_name, Path(os.getcwd(), arr_f[0]))  # move inside folder 'Documents'
 
 def move_file(arr_f: list) -> None:
     for f_name in os.listdir():
-        if not Path(f_name).suffix == '':
+        if not Path(f_name).suffix == '' and os.stat(f_name).st_ino != 0:
+
+            if os.path.exists(Path(os.getcwd(), arr_f[0], f_name)):
+                f_name = check_FileRename(arr_f[0], f_name)
+
             shutil.move(f_name, Path(os.getcwd(), arr_f[0]))  # move inside folder 'Others'
 
 def move_folder(dict_f: dict) -> None:
     arr_f = []
-    for i in dict_f:
+    for i in range(1, len(dict_f)):
         arr_f.append(dict_f[i][0])
 
     for f_name in os.listdir():
-        if not f_name in arr_f:
+        if not f_name in arr_f and os.stat(f_name).st_ino != 0:
             shutil.move(f_name, Path(os.getcwd(), dict_f[6][0]))  # move inside folder 'Folders'
+
+#==========================================main==========================================#
+global_sufix = '_copy'
 
 if __name__ == '__main__':
 
@@ -70,11 +91,6 @@ if __name__ == '__main__':
                    5: ['Others'],
                    6: ['Folders']
                    }
-
-    # toJSON_File(dict_folder, dict_folder[0][1])
-    # dict_folder = JSON_File_toDict(data_file)
-    # print(list(dict_folder.keys()))
-
 
     set_direct(dict_folder[0][0])
     create_folders(dict_folder)
@@ -89,5 +105,3 @@ if __name__ == '__main__':
     print('DONE')
 else:
     print('ERROR!')
-
-#===================data back_up======================#
